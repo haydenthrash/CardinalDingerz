@@ -23,26 +23,49 @@ def find_stl(text):
 
 #get games from the url
 def get_games(gamedayURL):
-    conn = httplib2.Http(".cache")
-    page = conn.request(gamedayURL,"GET")
-    page[0]
-    soup = BeautifulSoup(page[1], "html.parser")
-    games = [gamedayURL + game.lstrip() for game in soup.find_all(text=find_stl)]
-    return games
+	conn = httplib2.Http(".cache")
+	page = conn.request(gamedayURL,"GET")
+	page[0]
+	soup = BeautifulSoup(page[1], "html.parser")
+	games = [gamedayURL + game.lstrip() for game in soup.find_all(text=find_stl)]
+	return games
+
+def find_stl_id(text):
+	return re.compile("slnmlb").search(text)
+
+def find_status(text):
+	#return re.compile("FINAL").search(text)
+	return re.compile("IN_PROGRESS").search(text) or re.compile("IMMEDIATE_PREGAME").search(text) or re.compile("DELAYED").search(text)
 
 #get all games that are in progress from the URL
 def cards_games_in_progress(gamedayURL):
-    conn = httplib2.Http(".cache")
-    page = conn.request(gamedayURL + "scoreboard.xml","GET")
-    page[0]
-    soup = BeautifulSoup(page[1], "html.parser")
-    count = 0
-    for game in soup.find_all("game"):
-        #if game["status"] == "IN_PROGRESS" or game["status"] == "PRE_GAME" or game["status"] == "IMMEDIATE_PREGAME" or game["status"] == "DELAYED":
-		#TODO: CHANGE FROM FINAL TO COMMENT ABOVE
-        if re.compile("slnmlb").search(game["id"]) and game["status"] == "FINAL":
-            count += 1
-    return count
+	conn = httplib2.Http(".cache")
+	page = conn.request(gamedayURL + "scoreboard.xml","GET")
+	page[0]
+	soup = BeautifulSoup(page[1], "html.parser")
+	games = soup.find_all("game", id=find_stl_id, status=find_status)
+	for game in games:
+
+		game["cards_score"] = " "
+		game["enemy_score"] = " "
+		game["inning"] = " "
+		if re.compile("slnmlb").search(game["id"]) and (game["status"] == "IN_PROGRESS" or game["status"] == "IMMEDIATE_PREGAME" or game["status"] == "DELAYED"):
+			#if re.compile("slnmlb").search(game["id"]) and (game["status"]) == "FINAL":
+			team1 = game.parent.findNext("team")
+			if team1["name"] == "Cardinals":
+				game["cards_score"] = team1.find("gameteam").get("r")
+				game["enemy_name"] = team1.findNext("team").get("name")
+				game["enemy_score"] = team1.findNext("team").find("gameteam").get("r")
+			else:
+				game["enemy_name"] = team1.get("name")
+				game["enemy_score"] = team1.find("gameteam").get("r")
+				game["cards_score"] = team1.findNext("team").find("gameteam").get("r")
+			for child in team1.parent.children:
+				if child.name == "inningnum":
+					game["inning"] = child.get("inning")
+		else:
+			games.remove(game)
+	return games
 
 def is_home_team(gameURL):
 	conn = httplib2.Http(".cache")
@@ -53,6 +76,13 @@ def is_home_team(gameURL):
 		if team["type"] == "home" and team["code"] == "sln":
 			return True
 	return False
+
+def get_score(gameURL):
+	conn = httplib2.Http(".cache")
+	page = conn.request(gaemURL + "game_events.xml", "GET")
+	page[0]
+	soup = BeautifulSoup(page[1], "html.parser")
+	games = []
 
 def get_events(gameURL):
 	conn = httplib2.Http(".cache")
@@ -96,6 +126,36 @@ def get_more_info(gameURL, event):
 		if(pitch["id"] == event["pitcher_no"]):
 			d["pitcher"] = pitch.get("name")
 	return d
+
+def load_batters(batter):
+	if batter.parent.parent.get(batter.parent.get("team_flag") + "_team_code") == "sln":
+		d = {}
+		d["id"] = batter.get("id")
+		d["batter"] = batter.get("name_display_first_last")
+		d["s_hr"] = batter.get("s_hr")
+		return d
+	else:
+		return None
+
+def get_batters(gameURL):
+    conn = httplib2.Http(".cache")
+    page = conn.request(gameURL + "boxscore.xml","GET")
+    page[0]
+    soup = BeautifulSoup(page[1], "html.parser")
+    batters = [load_batters(batter) for batter in soup.find_all("batter")]
+    batters = get_career(gameURL, batters)
+    return batters
+
+def get_career(gameURL, batters):
+	batters = [bat for bat in batters if bat is not None]
+	for bat in batters:
+		if(bat is not None and bat != 0):
+			conn = httplib2.Http(".cache")
+			page = conn.request(gameURL + "batters/" + bat["id"] + ".xml","GET")
+			page[0]
+			soup = BeautifulSoup(page[1], "html.parser")
+			bat["c_hr"] = soup.find("career").get("hr")
+	return batters
 
 def load_events(event):
 	d = {}

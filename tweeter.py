@@ -1,37 +1,46 @@
-import sys
-from dingerz import *
-import sqlite3 as sql
+from tweets import *
+from TwitterAuth import *
+import tweepy
+import random
 
-def check_4_dingerz():
+def tweet_scores(game):
+	auth = tweepy.OAuthHandler(ConsKey, ConsSecret)
+	auth.set_access_token(AccToken, AccTokenSecret)
+	twitterApi = tweepy.API(auth)
+	inning = game["inning"]
+	if(inning is 3):
+		inning = "3rd"
+	else:
+		inning = str(inning) + "th"
+	cardsScore = game["cards_score"]
+	enemyScore = game["enemy_score"]
+	enemyName = game["enemy_name"]
 
-	dbConn = sql.connect("test.db")
+	index = random.randint(0, len(ScoreTweets)-1)
 
-	if(cards_games_in_progress(basegamedayURL) != 0):
-		print "There is a game in progress"
-		todays_games = get_games(basegamedayURL)
-		for x in range(0,len(todays_games)):
-			game_events = get_events(todays_games[x])
-			for event in game_events:
-				inning_half = "bottom"
-				if(not is_home_team(todays_games[x])):
-					inning_half = "top"
+	tweet = ScoreTweets[index] % locals()
+	print tweet
+	#twitterApi.update_status(status=tweet)
 
-				if(event["event"] == "Home Run" and event["inning_half"] == inning_half):
-					gameID = event["game_id"]
-					eventID = event["event_num"]
-					row = " "
-					with dbConn:
-						cur = dbConn.cursor()
-						cur.execute("SELECT * FROM Home_runs WHERE Game_ID=:gID AND Event_ID=:eID", {"gID" : gameID, "eID" : eventID})
-						row = cur.fetchone()
+def tweet_event(event):
+	auth = tweepy.OAuthHandler(ConsKey, ConsSecret)
+	auth.set_access_token(AccToken, AccTokenSecret)
+	twitterApi = tweepy.API(auth)
 
-					if(row != None):
-						print "Home run from " + event["batter"] + " already tweeted"
-					else:
-						print event["batter"] + " hits a HOME RUN against the " + event["enemy"]
-						with dbConn:
-							cur = dbConn.cursor()
-							cur.execute("INSERT INTO Home_runs VALUES(?, ?, ?, ?, ?, ?, ?)", (
-							event["game_id"], event["event_num"], event["batter_no"], event["batter"],
-							event["pitcher_no"], event["pitcher"], event["rbi"]
-							));
+	batter = event["batter"]
+	enemy = event["enemy"]
+	pitcher = event["pitcher"]
+	rbi = event["rbi"]
+
+	seasonHR = event["s_hr"]
+	careerHR = event["c_hr"]
+
+	tweet = ""
+
+	if(rbi is not 4):
+		index = random.randint(0, len(HomeRunTweets)-1)
+		tweet = HomeRunTweets[index] % locals()
+	else:
+		tweet = "%(batter)s hits a GRAND SLAM against the %(enemy)s" % locals()
+	print tweet
+	#twitterApi.update_status(status=tweet)
