@@ -1,6 +1,6 @@
 ScoreTweets = [
-"At the top of the %(inning)s, it's Cards: %(cardsScore)d %(enemyName)s: %(enemyScore)d",
-"It's Cards: %(cardsScore)d %(enemyName)s: %(enemyScore)d at the top of the %(inning)s"
+"At the top of the %(inning)s, it's Cards: %(cardsScore)s %(enemyName)s: %(enemyScore)s",
+"It's Cards: %(cardsScore)s %(enemyName)s: %(enemyScore)s at the top of the %(inning)s"
 ]
 
 HomeRunTweets = [

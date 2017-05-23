@@ -21,11 +21,15 @@ def check_4_dingerz():
 		todays_games = get_games(basegamedayURL)
 		for prog in inProgressGames:
 			if(not isScoreInDB(prog["id"], prog["inning"], dbConn)):
-				addScoreToDB(prog, dbConn)
-				print "Cards: " + prog["cards_score"]
-				print prog["enemy_name"]+ " " + prog["enemy_score"]
-		for x in range(0,len(todays_games)):
+				#Don't want to even check if its not 3,6,9 or extra.
+				inningNo = prog["inning"]
+				if int(inningNo) is not 3 and int(inningNo) is not 6 and int(inningNo) < 9:
+					print inningNo
 
+				else:
+					addScoreToDB(prog, dbConn)
+					tweet_scores(prog)
+		for x in range(0,len(todays_games)):
 			game_events = get_events(todays_games[x])
 			for event in game_events:
 

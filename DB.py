@@ -41,9 +41,6 @@ def insertEvent(event, dbConn):
 		));
 
 def isScoreInDB(gameID, inningNo, dbConn):
-	#Don't want to even check if its not 3,6,9 or extra.
-	if(inningNo is not 3 and inningNo is not 6 and inningNo < 9):
-		return True
 	with dbConn:
 		cur = dbConn.cursor()
 		cur.execute("SELECT * FROM Inning_Scores WHERE Game_ID=:gID AND Inning_No=:iNo", {"gID": gameID, "iNo": inningNo})
