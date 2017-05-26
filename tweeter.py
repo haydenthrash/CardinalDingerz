@@ -3,12 +3,12 @@ from TwitterAuth import *
 import tweepy
 import random
 
-def tweet_scores(game):
+def tweetScores(game):
 	auth = tweepy.OAuthHandler(ConsKey, ConsSecret)
 	auth.set_access_token(AccToken, AccTokenSecret)
 	twitterApi = tweepy.API(auth)
 	inning = game["inning"]
-	if(inning is 3):
+	if(inning == 3):
 		inning = "3rd"
 	else:
 		inning = str(inning) + "th"
@@ -16,13 +16,13 @@ def tweet_scores(game):
 	enemyScore = game["enemy_score"]
 	enemyName = game["enemy_name"]
 
-	index = random.randint(0, len(ScoreTweets)-1)
+	index = random.randint(0, len(scoreTweets)-1)
 
-	tweet = ScoreTweets[index] % locals()
+	tweet = scoreTweets[index] % locals()
 	print tweet
 	#twitterApi.update_status(status=tweet)
 
-def tweet_event(event):
+def tweetEvent(event):
 	auth = tweepy.OAuthHandler(ConsKey, ConsSecret)
 	auth.set_access_token(AccToken, AccTokenSecret)
 	twitterApi = tweepy.API(auth)
@@ -37,10 +37,30 @@ def tweet_event(event):
 
 	tweet = ""
 
-	if(rbi is not 4):
-		index = random.randint(0, len(HomeRunTweets)-1)
-		tweet = HomeRunTweets[index] % locals()
+	if(rbi != 4):
+		index = random.randint(0, len(homeRunTweets)-1)
+		tweet = homeRunTweets[index] % locals()
 	else:
 		tweet = "%(batter)s hits a GRAND SLAM against the %(enemy)s" % locals()
+	print tweet
+	#twitterApi.update_status(status=tweet)
+
+def tweetFinalScore(game):
+	auth = tweepy.OAuthHandler(ConsKey, ConsSecret)
+	auth.set_access_token(AccToken, AccTokenSecret)
+	twitterApi = tweepy.API(auth)
+
+	cardsScore = game["cards_score"]
+	enemyScore = game["enemy_score"]
+	enemyName = game["enemy_name"]
+
+	tweet = ""
+
+	if(int(cardsScore) > int(enemyScore)):
+		index = random.randint(0, len(winTweets)-1)
+		tweet = winTweets[index] % locals()
+	else:
+		index = random.randint(0, len(loseTweets)-1)
+		tweet = loseTweets[index] % locals()
 	print tweet
 	#twitterApi.update_status(status=tweet)

@@ -2,11 +2,11 @@ import sqlite3 as sql
 import sys
 
 
-def batterInDB(bat_id, dbConn):
+def batterInDB(batID, dbConn):
 
 	with dbConn:
 		current = dbConn.cursor()
-		current.execute("SELECT * FROM Cardinal_Batters WHERE Batter_ID=:bId", {"bId":bat_id})
+		current.execute("SELECT * FROM Cardinal_Batters WHERE Batter_ID=:bId", {"bId":batID})
 		data = current.fetchone()
 
 		if(data == None):

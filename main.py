@@ -4,45 +4,45 @@ from DB import *
 from tweeter import *
 import sqlite3 as sql
 
-def check_4_dingerz():
+def check4Dingerz():
 
 	#TODO:
 	# Add differing tweets
 	# Add foreign key between games (if gameID is the same for Inning_Scores and Home_runs)
-	# X Add scores at 3rd, 6th, 9th, each EI and end of game
-		#NEEDS TO BE TESTED (mainly extra innings)
 
 	dbConn = sql.connect("test.db")
 
-	inProgressGames = cards_games_in_progress(basegamedayURL)
+	inProgressGames = cardsGamesInProgress(basegamedayURL)
+	completedGames = cardsGamesCompleted(basegamedayURL)
+
 	if(len(inProgressGames) != 0):
 
 		print "There are %d game(s) in progress" % (len(inProgressGames))
-		todays_games = get_games(basegamedayURL)
+		todaysGames = getGames(basegamedayURL)
 		for prog in inProgressGames:
 			if(not isScoreInDB(prog["id"], prog["inning"], dbConn)):
 				#Don't want to even check if its not 3,6,9 or extra.
 				inningNo = prog["inning"]
-				if int(inningNo) is not 3 and int(inningNo) is not 6 and int(inningNo) < 9:
+				if int(inningNo) != 3 and int(inningNo) != 6 and int(inningNo) < 9:
 					print inningNo
 
 				else:
 					addScoreToDB(prog, dbConn)
-					tweet_scores(prog)
-		for x in range(0,len(todays_games)):
-			game_events = get_events(todays_games[x])
-			for event in game_events:
+					tweetScores(prog)
+		for x in range(0,len(todaysGames)):
+			gameEvents = getEvents(todaysGames[x])
+			for event in gameEvents:
 
-				inning_half = "bottom"
-				if(not is_home_team(todays_games[x])):
-					inning_half = "top"
+				inningHalf = "bottom"
+				if(not isHomeTeam(todaysGames[x])):
+					inningHalf = "top"
 
-				if(event["event"] == "Home Run" and event["inning_half"] == inning_half):
+				if(event["event"] == "Home Run" and event["inning_half"] == inningHalf):
 
 					gameID = event["game_id"]
 					eventID = event["event_num"]
 
-					batters = get_batters(todays_games[x])
+					batters = getBatters(todaysGames[x])
 					for bat in batters:
 						insertBatter(bat, dbConn)
 						if(bat["id"] == event["batter_no"]):
@@ -50,5 +50,11 @@ def check_4_dingerz():
 							event["c_hr"] = bat["c_hr"]
 
 					if(not isHRinDB(gameID, eventID, dbConn)):
-						tweet_event(event)
+						tweetEvent(event)
 						insertEvent(event, dbConn)
+	if(len(completedGames) != 0):
+		for game in completedGames:
+			if(not isScoreInDB(game["id"], -1, dbConn)):
+				game["inning"] = -1
+				addScoreToDB(game, dbConn)
+				tweetFinalScore(game)
