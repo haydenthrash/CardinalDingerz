@@ -20,6 +20,11 @@ def insertBatter(batter, dbConn):
 			current = dbConn.cursor()
 			current.execute("INSERT INTO Cardinal_Batters VALUES (?, ?, ?, ?)", (batter["id"], batter["batter"], batter["s_hr"], batter["c_hr"]))
 
+def increaseHR(batterID, dbConn):
+	with dbConn:
+		current = dbConn.cursor()
+		current.execute("UPDATE Cardinal_Batters SET Season_HRS = Season_HRS + 1 WHERE Batter_ID=:bId", {"bId":batterID})
+		current.execute("UPDATE Cardinal_Batters SET Career_HRS = Career_HRS + 1 WHERE Batter_ID=:bId", {"bId":batterID})
 
 def isHRinDB(gameID, eventID, dbConn):
 	with dbConn:

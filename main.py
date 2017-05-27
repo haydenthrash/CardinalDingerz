@@ -54,6 +54,7 @@ def check4Dingerz():
 						if(bat["id"] == event["batter_no"]):
 							event["s_hr"] = bat["s_hr"]
 							event["c_hr"] = bat["c_hr"]
+							increaseHR(bat["id"], dbConn)
 
 					if(not isHRinDB(gameID, eventID, dbConn)):
 						tweetEvent(event)

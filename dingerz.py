@@ -37,7 +37,7 @@ def findStatus(text):
 	return re.compile("IN_PROGRESS").search(text) or re.compile("IMMEDIATE_PREGAME").search(text) or re.compile("DELAYED").search(text)
 
 def findCompleteStatus(text):
-	return re.compile("FINAL").search(text)
+	return re.compile("FINAL").search(text) or re.compile("GAME_OVER").search(text)
 
 #get all games that are in progress from the URL
 def cardsGamesInProgress(gamedayURL):
@@ -80,7 +80,7 @@ def cardsGamesCompleted(gamedayURL):
 		game["cards_score"] = " "
 		game["enemy_score"] = " "
 		game["inning"] = " "
-		if re.compile("slnmlb").search(game["id"]) and (game["status"]) == "FINAL":
+		if re.compile("slnmlb").search(game["id"]) and (game["status"] == "FINAL" or game["status"] == "GAME_OVER"):
 			team1 = game.parent.findNext("team")
 			if team1["name"] == "Cardinals":
 				game["cards_score"] = team1.find("gameteam").get("r")
