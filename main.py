@@ -8,18 +8,22 @@ def check4Dingerz():
 
 	#TODO:
 	# Add differing tweets
-	# Add foreign key between games (if gameID is the same for Inning_Scores and Home_runs)
+	# Add total home runs to final tweets
 
 	dbConn = sql.connect("test.db")
 
 	inProgressGames = cardsGamesInProgress(basegamedayURL)
 	completedGames = cardsGamesCompleted(basegamedayURL)
+	cardsScore = 0
+	enemyScore = 0
 
 	if(len(inProgressGames) != 0):
 
 		print "There are %d game(s) in progress" % (len(inProgressGames))
 		todaysGames = getGames(basegamedayURL)
 		for prog in inProgressGames:
+			cardsScore = prog["cards_score"]
+			enemyScore = prog["enemy_score"]
 			if(not isScoreInDB(prog["id"], prog["inning"], dbConn)):
 				#Don't want to even check if its not 3,6,9 or extra.
 				inningNo = prog["inning"]
@@ -41,6 +45,8 @@ def check4Dingerz():
 
 					gameID = event["game_id"]
 					eventID = event["event_num"]
+					event["cards_score"] = cardsScore
+					event["enemy_score"] = enemyScore
 
 					batters = getBatters(todaysGames[x])
 					for bat in batters:

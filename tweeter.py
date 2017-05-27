@@ -16,9 +16,18 @@ def tweetScores(game):
 	enemyScore = game["enemy_score"]
 	enemyName = game["enemy_name"]
 
-	index = random.randint(0, len(scoreTweets)-1)
+	tweet = ""
 
-	tweet = scoreTweets[index] % locals()
+	if(int(cardsScore) > int(enemyScore)):
+		index = random.randint(0, len(winningTweets)-1)
+		tweet = winningTweets[index] % locals()
+	elif(int(cardsScore) == int(enemyScore)):
+		index = random.randint(0, len(tiedTweets)-1)
+		tweet = tiedTweets[index] % locals()
+	else:
+		index = random.randint(0, len(losingTweets)-1)
+		tweet = losingTweets[index] % locals()
+
 	print tweet
 	#twitterApi.update_status(status=tweet)
 
@@ -31,7 +40,8 @@ def tweetEvent(event):
 	enemy = event["enemy"]
 	pitcher = event["pitcher"]
 	rbi = event["rbi"]
-
+	cardsScore = event["cards_score"]
+	enemyScore = event["enemy_score"]
 	seasonHR = event["s_hr"]
 	careerHR = event["c_hr"]
 
