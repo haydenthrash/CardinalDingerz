@@ -8,7 +8,6 @@ def check4Dingerz():
 
 	#TODO:
 	# Add differing tweets
-	# Add total home runs to final tweets
 
 	dbConn = sql.connect("test.db")
 
@@ -18,7 +17,6 @@ def check4Dingerz():
 	enemyScore = 0
 
 	if(len(inProgressGames) != 0):
-
 		print "There are %d game(s) in progress" % (len(inProgressGames))
 		todaysGames = getGames(basegamedayURL)
 		for prog in inProgressGames:
@@ -28,7 +26,7 @@ def check4Dingerz():
 				#Don't want to even check if its not 3,6,9 or extra.
 				inningNo = prog["inning"]
 				if int(inningNo) != 3 and int(inningNo) != 6 and int(inningNo) < 9:
-					print inningNo
+					pass
 
 				else:
 					addScoreToDB(prog, dbConn)
@@ -61,7 +59,7 @@ def check4Dingerz():
 						insertEvent(event, dbConn)
 	if(len(completedGames) != 0):
 		for game in completedGames:
-			if(not isScoreInDB(game["id"], -1, dbConn)):
-				game["inning"] = -1
-				addScoreToDB(game, dbConn)
+			if(not isFinalInDB(game["id"], dbConn)):
+				game["num_hrs"] = getGameHRS(game["id"], dbConn)
+				addFinalToDB(game, dbConn)
 				tweetFinalScore(game)

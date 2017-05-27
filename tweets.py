@@ -33,13 +33,34 @@ tiedTweets = [
 ]
 
 winTweets = [
-"Final score is #Cards: %(cardsScore)s #%(enemyName)s: %(enemyScore)s #CardsWin",
-"The #Cardinals beat the #%(enemyName)s %(cardsScore)s-%(enemyScore)s #CardsWin",
-"And that'll be a W for the #Cardinals against the #%(enemyName)s!! Final Score: %(cardsScore)s-%(enemyScore)s #CardsWin",
-"The #Cards take the win %(cardsScore)s-%(enemyScore)s against the #%(enemyName)s"
+"With %(numHrs)s #HomeRuns, the final score is #Cards: %(cardsScore)s #%(enemyName)s: %(enemyScore)s #CardsWin",
+"The #Cardinals beat the #%(enemyName)s %(cardsScore)s-%(enemyScore)s and hit %(numHrs)s #HomeRuns #CardsWin",
+"That'll be a W for the #Cardinals against the #%(enemyName)s!! Final: %(cardsScore)s-%(enemyScore)s with %(numHrs)s #HomeRuns #CardsWin",
+"The #Cards take the win %(cardsScore)s-%(enemyScore)s against the #%(enemyName)s with a total of %(numHrs)s #HomeRuns #CardsWin"
+]
+
+oneHrWinTweets = [
+"With only one #HomeRun, the final score is #Cards: %(cardsScore)s #%(enemyName)s: %(enemyScore)s #CardsWin",
+"The #Cardinals beat the #%(enemyName)s %(cardsScore)s-%(enemyScore)s and hit one #HomeRun #CardsWin",
+"That'll be a W for the #Cardinals against the #%(enemyName)s!! Final: %(cardsScore)s-%(enemyScore)s with only one #HomeRun #CardsWin",
+"The #Cards take the win %(cardsScore)s-%(enemyScore)s against the #%(enemyName)s with a total of one #HomeRun #CardsWin"
+]
+
+noHrWinTweets = [
+"Even with no #HomeRuns, the #Cardinals still beat the #%(enemyName)s %(cardsScore)s-%(enemyScore)s!! #CardsWin",
+"The #Cards take the win %(cardsScore)s-%(enemyScore)s against the #%(enemyName)s without hitting a single #HomeRun #CardsWin",
+"Turns out, they didn't need a #HomeRun to beat the #%(enemyName)s %(cardsScore)s-%(enemyScore)s #CardsWin"
+]
+
+noHrLoseTweets = [
+"With no #HomeRuns to help them out, the #Cards take the L. Final is #Cardinals: %(cardsScore)s #%(enemyName)s: %(enemyScore)s"
+]
+
+oneHrLoseTweets = [
+"With only one #HomeRun to help them out, the #Cards take the L. Final is #Cardinals: %(cardsScore)s #%(enemyName)s: %(enemyScore)s"
 ]
 
 loseTweets = [
-"A sad day for St. Louis. #Cardinals lose to the #%(enemyName)s %(cardsScore)s-%(enemyScore)s",
-"Final score is #Cardinals: %(cardsScore)s #%(enemyName)s: %(enemyScore)s",
+"A sad day for St. Louis. #Cardinals lose to the #%(enemyName)s %(cardsScore)s-%(enemyScore)s even with %(numHrs)s #HomeRuns",
+"With %(numHrs)s #HomeRuns, final score is #Cardinals: %(cardsScore)s #%(enemyName)s: %(enemyScore)s",
 ]

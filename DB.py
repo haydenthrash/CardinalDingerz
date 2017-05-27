@@ -62,3 +62,27 @@ def addScoreToDB(gameScore, dbConn):
 		cur.execute("INSERT INTO Inning_Scores VALUES(?, ?, ?, ?, ?)", (
 		gameScore["id"], gameScore["inning"], gameScore["cards_score"], gameScore["enemy_score"], gameScore["enemy_name"]
 		))
+
+def isFinalInDB(gameID, dbConn):
+	with dbConn:
+		cur = dbConn.cursor()
+		cur.execute("SELECT * FROM Final_Scores WHERE Game_ID=:gID", {"gID": gameID})
+		row = cur.fetchone()
+
+		if(row == None):
+			return False
+		else:
+			return True
+def addFinalToDB(game, dbConn):
+	with dbConn:
+		cur = dbConn.cursor()
+		cur.execute("INSERT INTO Final_Scores VALUES(?, ?, ?, ?, ?)", (
+		game["id"], game["enemy_name"], game["cards_score"], game["enemy_score"], game["num_hrs"]
+		))
+
+def getGameHRS(gameID, dbConn):
+	with dbConn:
+		cur = dbConn.cursor()
+		cur.execute("SELECT * FROM Home_runs WHERE Game_ID=:gID", {"gID": gameID})
+		rows = cur.fetchall()
+		return len(rows)
