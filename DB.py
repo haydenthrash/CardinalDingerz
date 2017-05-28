@@ -19,11 +19,11 @@ def insertBatter(batter, dbConn):
 		current = dbConn.cursor()
 		current.execute("INSERT INTO Cardinal_Batters VALUES (?, ?, ?, ?)", (batter["id"], batter["batter"], batter["s_hr"], batter["c_hr"]))
 
-def increaseHR(batterID, dbConn):
+def increaseHR(batterID, seasonHr, careerHr, dbConn):
 	with dbConn:
 		current = dbConn.cursor()
-		current.execute("UPDATE Cardinal_Batters SET Season_HRS = Season_HRS + 1 WHERE Batter_ID=:bId", {"bId":batterID})
-		current.execute("UPDATE Cardinal_Batters SET Career_HRS = Career_HRS + 1 WHERE Batter_ID=:bId", {"bId":batterID})
+		current.execute("UPDATE Cardinal_Batters SET Season_HRS=:sHr WHERE Batter_ID=:bId", {"bId":batterID, "sHr":seasonHr})
+		current.execute("UPDATE Cardinal_Batters SET Career_HRS=:cHr WHERE Batter_ID=:bId", {"bId":batterID, "cHr":careerHr})
 
 def isHRinDB(gameID, eventID, dbConn):
 	with dbConn:
@@ -37,6 +37,9 @@ def isHRinDB(gameID, eventID, dbConn):
 		return True
 
 def insertEvent(event, dbConn):
+	gameId = event["game_id"].replace('-', '_')
+	gameId = gameId.replace('/', '_')
+	event["game_id"] = gameId
 	with dbConn:
 		cur = dbConn.cursor()
 		cur.execute("INSERT INTO Home_runs VALUES(?, ?, ?, ?, ?, ?, ?)", (

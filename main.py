@@ -48,17 +48,15 @@ def check4Dingerz():
 
 					batters = getBatters(todaysGames[x])
 					for bat in batters:
-						if(not batterInDB(batter["id"], dbConn)):
+						if(not batterInDB(bat["id"], dbConn)):
 							insertBatter(bat, dbConn)
-						elif(bat["id"] == event["batter_no"]):
-							increaseHR(bat["id"], dbConn)
-							
+
 						if(bat["id"] == event["batter_no"]):
 							event["s_hr"] = bat["s_hr"]
 							event["c_hr"] = bat["c_hr"]
 
-
 					if(not isHRinDB(gameID, eventID, dbConn)):
+						increaseHR(event["batter_no"], event["s_hr"], event["c_hr"],dbConn)
 						tweetEvent(event)
 						insertEvent(event, dbConn)
 	if(len(completedGames) != 0):

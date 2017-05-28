@@ -64,24 +64,23 @@ def tweetFinalScore(game):
 	enemyScore = game["enemy_score"]
 	enemyName = game["enemy_name"]
 	numHrs = game["num_hrs"]
-
 	tweet = ""
 
 	if(int(cardsScore) > int(enemyScore)):
-		if(numHrs == 0):
+		if(numHrs is 0):
 			index = random.randint(0, len(noHrWinTweets)-1)
 			tweet = noHrWinTweets[index] % locals()
-		elif(numHrs == 1):
+		elif(numHrs is 1):
 			index = random.randint(0, len(oneHrWinTweets)-1)
 			tweet = oneHrWinTweets[index] % locals()
 		else:
 			index = random.randint(0, len(winTweets)-1)
 			tweet = winTweets[index] % locals()
 	else:
-		if(numHrs == 0):
+		if(numHrs is 0):
 			index = random.randint(0, len(noHrLoseTweets)-1)
 			tweet = noHrLoseTweets[index] % locals()
-		elif(numHrs == 1):
+		elif(numHrs is 1):
 			index = random.randint(0, len(oneHrLoseTweets)-1)
 			tweet = oneHrLoseTweets[index] % locals()
 		else:
