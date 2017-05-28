@@ -15,10 +15,9 @@ def batterInDB(batID, dbConn):
 			return True
 
 def insertBatter(batter, dbConn):
-	if(not batterInDB(batter["id"], dbConn)):
-		with dbConn:
-			current = dbConn.cursor()
-			current.execute("INSERT INTO Cardinal_Batters VALUES (?, ?, ?, ?)", (batter["id"], batter["batter"], batter["s_hr"], batter["c_hr"]))
+	with dbConn:
+		current = dbConn.cursor()
+		current.execute("INSERT INTO Cardinal_Batters VALUES (?, ?, ?, ?)", (batter["id"], batter["batter"], batter["s_hr"], batter["c_hr"]))
 
 def increaseHR(batterID, dbConn):
 	with dbConn:
