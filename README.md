@@ -2,8 +2,6 @@
 
 @CardinalDingerz on twitter
 
-*In testing. Not yet hooked up to twitter API*
-
 This project was based on the SombreroWatch repository and twitter account by joemfox. Uses SQLite3 instead
 of a file-based approach to save tweet and event data.
 

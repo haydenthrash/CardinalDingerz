@@ -29,7 +29,7 @@ def tweetScores(game):
 		tweet = losingTweets[index] % locals()
 
 	print tweet
-	#twitterApi.update_status(status=tweet)
+	twitterApi.update_status(status=tweet)
 
 def tweetEvent(event):
 	auth = tweepy.OAuthHandler(ConsKey, ConsSecret)
@@ -53,7 +53,7 @@ def tweetEvent(event):
 	else:
 		tweet = "%(batter)s hits a GRAND SLAM against the %(enemy)s" % locals()
 	print tweet
-	#twitterApi.update_status(status=tweet)
+	twitterApi.update_status(status=tweet)
 
 def tweetFinalScore(game):
 	auth = tweepy.OAuthHandler(ConsKey, ConsSecret)
@@ -87,4 +87,4 @@ def tweetFinalScore(game):
 			index = random.randint(0, len(loseTweets)-1)
 			tweet = loseTweets[index] % locals()
 	print tweet
-	#twitterApi.update_status(status=tweet)
+	twitterApi.update_status(status=tweet)
