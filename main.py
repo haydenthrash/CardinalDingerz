@@ -38,9 +38,9 @@ def check4Dingerz():
 				inningHalf = "bottom"
 				if(not isHomeTeam(todaysGames[x])):
 					inningHalf = "top"
+					print("away team")
 
 				if(event["event"] == "Home Run" and event["inning_half"] == inningHalf):
-
 					gameID = event["game_id"]
 					eventID = event["event_num"]
 					event["cards_score"] = cardsScore
